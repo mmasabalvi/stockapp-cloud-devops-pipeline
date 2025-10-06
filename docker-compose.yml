@@ -1,1 +1,28 @@
-# Placeholder; services will be added later (db, backend, frontend)
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: "${DOCKERHUB_USER:-myuser}/backend:latest"
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    # optionally depends_on frontend if needed, but usually frontend depends on backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: "${DOCKERHUB_USER:-myuser}/frontend:latest"
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+# networks if you want explicit definition
+networks:
+  default:
+    name: stockapp_net
