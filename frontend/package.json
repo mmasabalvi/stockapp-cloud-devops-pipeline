@@ -1,0 +1,9 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "echo \"build ok\"",
+    "test": "echo \"test ok\""
+  },
+  "dependencies": {}
+}
