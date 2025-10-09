@@ -10,6 +10,15 @@ pipeline {
   }
 
   stages {
+    stage('Debug permissions') {
+  steps {
+    sh '''
+      whoami
+      id
+      ls -l /var/run/docker.sock
+    '''
+  }
+}
     stage('Checkout') {
       steps {
         // Pull code from repo
