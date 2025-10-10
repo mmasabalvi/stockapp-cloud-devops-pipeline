@@ -1,14 +1,19 @@
 import mysql.connector
 from config import Config
+import os
+
 
 def get_db_connection():
+    host = os.getenv("DB_HOST", "localhost")
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+    database = os.getenv("DB_NAME")
     return mysql.connector.connect(
-        host=Config.DB_HOST,
-        user=Config.DB_USER,
-        password=Config.DB_PASSWORD,
-        database=Config.DB_NAME
+        host=host,
+        user=user,
+        password=password,
+        database=database
     )
-
 def fetch_recent_prices(ticker, limit=3):
     conn = get_db_connection()
     cursor = conn.cursor()
