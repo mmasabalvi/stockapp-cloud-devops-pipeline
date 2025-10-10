@@ -71,12 +71,27 @@ pipeline {
           sh 'docker-compose down || true'
 
           // Export MySQL credentials for compose
-          sh """
-            export MYSQL_ROOT_PASSWORD=${MYSQL_CRED_PSW}
-            export MYSQL_DATABASE=stockdb
-            export MYSQL_USER=${MYSQL_CRED_USR}
-            export MYSQL_PASSWORD=${MYSQL_CRED_PSW}
-          """
+          // sh """
+          //   export MYSQL_ROOT_PASSWORD=${MYSQL_CRED_PSW}
+          //   export MYSQL_DATABASE=stockdb
+          //   export MYSQL_USER=${MYSQL_CRED_USR}
+          //   export MYSQL_PASSWORD=${MYSQL_CRED_PSW}
+          // """
+
+                  sh """
+          MYSQL_ROOT_PASSWORD=${MYSQL_CRED_PSW} \
+          MYSQL_DATABASE=stockdb \
+          MYSQL_USER=${MYSQL_CRED_USR} \
+          MYSQL_PASSWORD=${MYSQL_CRED_PSW} \
+          docker-compose down || true
+
+          MYSQL_ROOT_PASSWORD=${MYSQL_CRED_PSW} \
+          MYSQL_DATABASE=stockdb \
+          MYSQL_USER=${MYSQL_CRED_USR} \
+          MYSQL_PASSWORD=${MYSQL_CRED_PSW} \
+          docker-compose up -d --build
+        """
+
 
           // Pull latest images (optional) and bring up stack
           sh 'docker-compose pull || true'
