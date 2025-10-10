@@ -1,9 +1,23 @@
-const API_BASE = window.location.origin;  
-// If backend is on a different host (or port), you might use something like “http://localhost:5000”
-// but if your backend + frontend are served under same domain via compose, using origin helps.
+const API_BASE = "http://localhost:5000";
 
-document.getElementById('btnPredict').addEventListener('click', async () => {
-  const ticker = document.getElementById('ticker').value.trim();
+// get elements
+const ddl = document.getElementById('tickerDropdown');
+const txtTicker = document.getElementById('tickerInput');
+const btnPredict = document.getElementById('btnPredict');
+const predResult = document.getElementById('predictionResult');
+const historyList = document.getElementById('historyList');
+const btnAdd = document.getElementById('btnAdd');
+const dateEl = document.getElementById('date');
+const priceEl = document.getElementById('price');
+const addStatus = document.getElementById('addStatus');
+
+// when user selects from dropdown, also set input
+ddl.addEventListener('change', () => {
+  txtTicker.value = ddl.value;
+});
+
+btnPredict.addEventListener('click', async () => {
+  const ticker = txtTicker.value.trim();
   if (!ticker) {
     alert('Enter a ticker symbol');
     return;
@@ -14,13 +28,12 @@ document.getElementById('btnPredict').addEventListener('click', async () => {
     const resp = await fetch(`${API_BASE}/predict/${ticker}`);
     const data = await resp.json();
     if (!resp.ok) {
-      document.getElementById('predictionResult').textContent = `Error: ${data.error}`;
+      predResult.textContent = `Error: ${data.error}`;
     } else {
-      document.getElementById('predictionResult').textContent =
-        `Predicted Price: ${data.predicted_price.toFixed(2)}`;
+      predResult.textContent = `Predicted Price: ${data.predicted_price.toFixed(2)}`;
     }
   } catch (err) {
-    document.getElementById('predictionResult').textContent = `Error: ${err.message}`;
+    predResult.textContent = `Error: ${err.message}`;
   }
 
   // fetch history
@@ -28,23 +41,22 @@ document.getElementById('btnPredict').addEventListener('click', async () => {
     const resp2 = await fetch(`${API_BASE}/history/${ticker}`);
     const hist = await resp2.json();
     if (resp2.ok) {
-      const ul = document.getElementById('historyList');
-      ul.innerHTML = '';
+      historyList.innerHTML = '';
       hist.forEach(item => {
         const li = document.createElement('li');
         li.textContent = `${item.date}: ${item.close_price}`;
-        ul.appendChild(li);
+        historyList.appendChild(li);
       });
     }
-  } catch (_) {
-    // ignore history fetch error for now
+  } catch (err) {
+    console.error("History fetch error:", err);
   }
 });
 
-document.getElementById('btnAdd').addEventListener('click', async () => {
-  const ticker = document.getElementById('ticker').value.trim();
-  const date = document.getElementById('date').value;
-  const price = document.getElementById('price').value;
+btnAdd.addEventListener('click', async () => {
+  const ticker = txtTicker.value.trim();
+  const date = dateEl.value;
+  const price = priceEl.value;
   if (!ticker || !date || !price) {
     alert('Fill all fields to add price');
     return;
@@ -64,11 +76,14 @@ document.getElementById('btnAdd').addEventListener('click', async () => {
     });
     const resj = await resp.json();
     if (!resp.ok) {
-      document.getElementById('addStatus').textContent = `Error: ${resj.error}`;
+      addStatus.textContent = `Error: ${resj.error}`;
+      addStatus.style.color = 'red';
     } else {
-      document.getElementById('addStatus').textContent = 'Price added successfully';
+      addStatus.textContent = 'Price added successfully';
+      addStatus.style.color = 'green';
     }
   } catch (err) {
-    document.getElementById('addStatus').textContent = `Error: ${err.message}`;
+    addStatus.textContent = `Error: ${err.message}`;
+    addStatus.style.color = 'red';
   }
 });

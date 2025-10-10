@@ -3,30 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <title>Stock Prediction App</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Stock Prediction</h1>
-  <div>
-    <label for="ticker">Ticker:</label>
-    <input type="text" id="ticker" placeholder="e.g. AAPL" />
-    <button id="btnPredict">Predict</button>
-  </div>
-  <div>
-    <h3>Prediction Result:</h3>
-    <p id="predictionResult">—</p>
-  </div>
-  <div>
-    <h3>History (Last prices):</h3>
-    <ul id="historyList"></ul>
-  </div>
-  <div>
-    <h3>Add Price Data</h3>
-    <label for="date">Date:</label>
-    <input type="date" id="date" /><br />
-    <label for="price">Price:</label>
-    <input type="number" step="0.01" id="price" /><br />
-    <button id="btnAdd">Add Price</button>
-    <p id="addStatus"></p>
+  <div class="container">
+    <header>
+      <h1>Stock Prediction Application</h1>
+      <p>Enter a stock ticker (or choose from the dropdown) and see the predicted price and history. You can also add new historical data.</p>
+    </header>
+
+    <section class="input-section">
+      <div class="field">
+        <label for="ticker">Ticker:</label>
+        <select id="tickerDropdown">
+          <option value="">-- Select ticker --</option>
+          <option value="AAPL">AAPL</option>
+          <option value="GOOGL">GOOGL</option>
+          <option value="MSFT">MSFT</option>
+          <option value="AMZN">AMZN</option>
+          <!-- you can add more -->
+        </select>
+        <input type="text" id="tickerInput" placeholder="or type ticker" />
+        <button id="btnPredict">Predict</button>
+      </div>
+    </section>
+
+    <section class="results">
+      <div>
+        <h3>Prediction Result:</h3>
+        <p id="predictionResult">—</p>
+      </div>
+      <div>
+        <h3>History (Last prices):</h3>
+        <ul id="historyList"></ul>
+      </div>
+    </section>
+
+    <section class="add-section">
+      <h3>Add Price Data</h3>
+      <div class="field">
+        <label for="date">Date:</label>
+        <input type="date" id="date" />
+      </div>
+      <div class="field">
+        <label for="price">Price:</label>
+        <input type="number" step="0.01" id="price" />
+      </div>
+      <button id="btnAdd">Add Price</button>
+      <p id="addStatus"></p>
+    </section>
   </div>
 
   <script src="src/app.js"></script>
