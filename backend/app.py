@@ -3,8 +3,15 @@ from flask_cors import CORS            # import CORS
 from models import fetch_recent_prices, fetch_history, insert_price
 from config import Config
 
+
 app = Flask(__name__)
 CORS(app)  # this enables CORS for all routes and all origins by default
+
+@app.errorhandler(Exception)
+def handle_all_exceptions(e):
+    # Log the full exception
+    app.logger.error("Unhandled Exception: %s", str(e), exc_info=True)
+    return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def root():
@@ -38,4 +45,5 @@ def add_price_endpoint():
     return jsonify({"status": "ok"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
