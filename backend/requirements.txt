@@ -1,1 +1,4 @@
-flask
+Flask==2.3.0
+mysql-connector-python==8.0.33
+python-dotenv==1.0.0
+pytest==7.4.0
