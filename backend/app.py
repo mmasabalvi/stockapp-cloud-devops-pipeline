@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS            # import CORS
 from models import fetch_recent_prices, fetch_history, insert_price
 from config import Config
 
 app = Flask(__name__)
+CORS(app)  # this enables CORS for all routes and all origins by default
 
 @app.route('/')
 def root():
