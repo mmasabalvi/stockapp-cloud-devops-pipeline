@@ -1,28 +1,62 @@
 version: "3.8"
 
 services:
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    image: "${DOCKERHUB_USER:-mmasabalvi}/database:${IMAGE_TAG:-latest}"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - stockapp_net
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: "${DOCKERHUB_USER:-myuser}/backend:latest"
-    ports:
-      - "5000:5000"
+    image: "${DOCKERHUB_USER:-mmasabalvi}/backend:${IMAGE_TAG:-latest}"
     environment:
       - FLASK_ENV=production
-    # optionally depends_on frontend if needed, but usually frontend depends on backend
+      - DB_HOST=database
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    networks:
+      - stockapp_net
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: "${DOCKERHUB_USER:-myuser}/frontend:latest"
-    ports:
-      - "3000:80"
+    image: "${DOCKERHUB_USER:-mmasabalvi}/frontend:${IMAGE_TAG:-latest}"
     depends_on:
       - backend
+    ports:
+      - "3000:80"
+    networks:
+      - stockapp_net
 
-# networks if you want explicit definition
+volumes:
+  db_data:
+
 networks:
-  default:
-    name: stockapp_net
+  stockapp_net:
