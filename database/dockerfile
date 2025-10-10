@@ -1,0 +1,14 @@
+# Use official MySQL image
+FROM mysql:8.0
+
+# Set environment variables for MySQL
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=stockdb
+ENV MYSQL_USER=stockuser
+ENV MYSQL_PASSWORD=stockpass
+
+# Copy the initialization SQL file so it runs on container first startup
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose the MySQL port
+EXPOSE 3306
