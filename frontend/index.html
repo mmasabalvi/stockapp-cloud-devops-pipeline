@@ -1,12 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Stock Prediction</title>
+  <meta charset="UTF-8" />
+  <title>Stock Prediction App</title>
 </head>
 <body>
-  <h1>Stock Prediction UI</h1>
-  <div id="result">No Data</div>
+  <h1>Stock Prediction</h1>
+  <div>
+    <label for="ticker">Ticker:</label>
+    <input type="text" id="ticker" placeholder="e.g. AAPL" />
+    <button id="btnPredict">Predict</button>
+  </div>
+  <div>
+    <h3>Prediction Result:</h3>
+    <p id="predictionResult">—</p>
+  </div>
+  <div>
+    <h3>History (Last prices):</h3>
+    <ul id="historyList"></ul>
+  </div>
+  <div>
+    <h3>Add Price Data</h3>
+    <label for="date">Date:</label>
+    <input type="date" id="date" /><br />
+    <label for="price">Price:</label>
+    <input type="number" step="0.01" id="price" /><br />
+    <button id="btnAdd">Add Price</button>
+    <p id="addStatus"></p>
+  </div>
+
   <script src="src/app.js"></script>
 </body>
 </html>
