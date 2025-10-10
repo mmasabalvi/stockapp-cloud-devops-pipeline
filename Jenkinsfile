@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKERHUB_CRED = 'dockerhub-credentials-id'  // Jenkins credentials ID for DockerHub
+    DOCKERHUB_CRED = 'dockerhub'  // Jenkins credentials ID for DockerHub
     DOCKERHUB_USER = 'mmasabalvi'                 // your DockerHub username
     DOCKERHUB_REPO_BACKEND = "${DOCKERHUB_USER}/backend"
     DOCKERHUB_REPO_FRONTEND = "${DOCKERHUB_USER}/frontend"
