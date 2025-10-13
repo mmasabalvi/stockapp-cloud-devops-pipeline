@@ -67,7 +67,6 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
-          // Bring down current stack (if any)
           sh 'docker-compose down || true'
 
           // Export MySQL credentials for compose

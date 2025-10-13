@@ -4,8 +4,6 @@ from models import fetch_recent_prices, fetch_history, insert_price
 from config import Config
 
 
-app = Flask(__name__)
-CORS(app)  # this enables CORS for all routes and all origins by default
 
 @app.errorhandler(Exception)
 def handle_all_exceptions(e):
