@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: mmasabalvi/backend:770b853ecf704373973d25dd41be36b71a2499e3
+          image: mmasabalvi/backend:2f8fd3f312ebd4f2939e1b7426c2246673980599
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
