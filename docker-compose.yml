@@ -4,7 +4,7 @@ services:
   database:
     build:
       context: ./database
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     image: "${DOCKERHUB_USER:-mmasabalvi}/database:${IMAGE_TAG:-latest}"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -27,7 +27,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     image: "${DOCKERHUB_USER:-mmasabalvi}/backend:${IMAGE_TAG:-latest}"
     environment:
       - FLASK_ENV=production
@@ -46,7 +46,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     image: "${DOCKERHUB_USER:-mmasabalvi}/frontend:${IMAGE_TAG:-latest}"
     depends_on:
       - backend

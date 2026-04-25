@@ -3,6 +3,9 @@ from flask_cors import CORS            # import CORS
 from models import fetch_recent_prices, fetch_history, insert_price
 from config import Config
 
+app = Flask(__name__)
+CORS(app)
+
 
 
 @app.errorhandler(Exception)
