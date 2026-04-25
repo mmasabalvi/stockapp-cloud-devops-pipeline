@@ -2,57 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Stock Prediction App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockLens Forecast Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Stock Prediction Application</h1>
-      <p>Enter a stock ticker (or choose from the dropdown) and see the predicted price and history. You can also add new historical data.</p>
-    </header>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">SL</div>
+        <div>
+          <p class="eyebrow">StockLens</p>
+          <h1>Forecast Desk</h1>
+        </div>
+      </div>
 
-    <section class="input-section">
-      <div class="field">
-        <label for="ticker">Ticker:</label>
-        <select id="tickerDropdown">
-          <option value="">-- Select ticker --</option>
-          <option value="AAPL">AAPL</option>
-          <option value="GOOGL">GOOGL</option>
-          <option value="MSFT">MSFT</option>
-          <option value="AMZN">AMZN</option>
-          <!-- you can add more -->
-        </select>
-        <input type="text" id="tickerInput" placeholder="or type ticker" />
-        <button id="btnPredict">Predict</button>
-      </div>
-    </section>
+      <nav class="nav-list" aria-label="Dashboard sections">
+        <a class="active" href="#forecast">Forecast</a>
+        <a href="#history">History</a>
+        <a href="#add-data">Add Data</a>
+      </nav>
 
-    <section class="results">
-      <div>
-        <h3>Prediction Result:</h3>
-        <p id="predictionResult">—</p>
+      <div class="status-panel">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Live API</strong>
+          <p>Backend connected through EC2</p>
+        </div>
       </div>
-      <div>
-        <h3>History (Last prices):</h3>
-        <ul id="historyList"></ul>
-      </div>
-    </section>
+    </aside>
 
-    <section class="add-section">
-      <h3>Add Price Data</h3>
-      <div class="field">
-        <label for="date">Date:</label>
-        <input type="date" id="date" />
-      </div>
-      <div class="field">
-        <label for="price">Price:</label>
-        <input type="number" step="0.01" id="price" />
-      </div>
-      <button id="btnAdd">Add Price</button>
-      <p id="addStatus"></p>
+    <section class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Cloud deployed prediction service</p>
+          <h2>Stock Prediction Dashboard</h2>
+        </div>
+        <div class="environment-pill">Kubernetes + ArgoCD</div>
+      </header>
+
+      <section id="forecast" class="workspace-grid">
+        <div class="panel query-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Ticker lookup</p>
+              <h3>Forecast Console</h3>
+            </div>
+          </div>
+
+          <div class="query-form">
+            <label for="tickerDropdown">Symbol</label>
+            <select id="tickerDropdown">
+              <option value="">Select ticker</option>
+              <option value="AAPL">AAPL</option>
+              <option value="GOOG">GOOG</option>
+              <option value="MSFT">MSFT</option>
+              <option value="AMZN">AMZN</option>
+            </select>
+
+            <label for="tickerInput">Manual entry</label>
+            <input type="text" id="tickerInput" placeholder="e.g. AAPL" />
+
+            <button id="btnPredict" type="button">Run Forecast</button>
+          </div>
+        </div>
+
+        <div class="metric-card primary-metric">
+          <p class="eyebrow">Predicted close</p>
+          <h3 id="tickerBadge">--</h3>
+          <p id="predictionResult" class="metric-value">Select a ticker</p>
+          <span id="predictionHint">Latest model: 3-day moving average</span>
+        </div>
+
+        <div class="metric-card">
+          <p class="eyebrow">Records loaded</p>
+          <h3 id="recordCount">0</h3>
+          <span>Historical prices returned</span>
+        </div>
+
+        <div class="metric-card">
+          <p class="eyebrow">Latest close</p>
+          <h3 id="latestPrice">--</h3>
+          <span id="latestDate">Waiting for data</span>
+        </div>
+      </section>
+
+      <section id="history" class="content-grid">
+        <div class="panel trend-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Price movement</p>
+              <h3>Historical Trend</h3>
+            </div>
+            <span id="trendSummary">No ticker selected</span>
+          </div>
+          <div id="trendChart" class="trend-chart" aria-label="Historical close price trend"></div>
+        </div>
+
+        <div class="panel table-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Dataset</p>
+              <h3>History</h3>
+            </div>
+          </div>
+          <ul id="historyList" class="history-list"></ul>
+        </div>
+      </section>
+
+      <section id="add-data" class="panel add-section">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Manual update</p>
+            <h3>Add Price Data</h3>
+          </div>
+          <p id="addStatus"></p>
+        </div>
+
+        <div class="add-grid">
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" id="date" />
+          </div>
+          <div class="field">
+            <label for="price">Close Price</label>
+            <input type="number" step="0.01" id="price" placeholder="0.00" />
+          </div>
+          <button id="btnAdd" type="button">Add Price</button>
+        </div>
+      </section>
     </section>
-  </div>
+  </main>
 
   <script src="src/app.js"></script>
 </body>

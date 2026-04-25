@@ -275,4 +275,7 @@ kubectl rollout restart deployment/database -n stockapp
 - A 2 GB swap file was added on EC2 because `t3.small` has limited RAM.
 - Docker images are pushed to Docker Hub under `mmasabalvi`.
 - GitHub Actions CI is planned as the next step to automate image builds and pushes.
+
+For me:
 mrpY0saB6FIOqQa8
+ wsl ssh -o ConnectTimeout=30 -i ~/.ssh/stockapp-key.pem ubuntu@3.228.17.99

@@ -1,6 +1,5 @@
 const API_BASE = "http://3.228.17.99:30050";
 
-// get elements
 const ddl = document.getElementById('tickerDropdown');
 const txtTicker = document.getElementById('tickerInput');
 const btnPredict = document.getElementById('btnPredict');
@@ -10,51 +9,59 @@ const btnAdd = document.getElementById('btnAdd');
 const dateEl = document.getElementById('date');
 const priceEl = document.getElementById('price');
 const addStatus = document.getElementById('addStatus');
+const tickerBadge = document.getElementById('tickerBadge');
+const recordCount = document.getElementById('recordCount');
+const latestPrice = document.getElementById('latestPrice');
+const latestDate = document.getElementById('latestDate');
+const trendChart = document.getElementById('trendChart');
+const trendSummary = document.getElementById('trendSummary');
 
-// when user selects from dropdown, also set input
 ddl.addEventListener('change', () => {
   txtTicker.value = ddl.value;
 });
 
 btnPredict.addEventListener('click', async () => {
-  const ticker = txtTicker.value.trim();
+  const ticker = txtTicker.value.trim().toUpperCase();
   if (!ticker) {
     alert('Enter a ticker symbol');
     return;
   }
 
-  // fetch prediction
+  txtTicker.value = ticker;
+  tickerBadge.textContent = ticker;
+  predResult.textContent = 'Loading forecast...';
+  trendSummary.textContent = 'Fetching latest history';
+
   try {
     const resp = await fetch(`${API_BASE}/predict/${ticker}`);
     const data = await resp.json();
     if (!resp.ok) {
       predResult.textContent = `Error: ${data.error}`;
+      predResult.classList.add('is-error');
     } else {
-      predResult.textContent = `Predicted Price: ${data.predicted_price.toFixed(2)}`;
+      predResult.classList.remove('is-error');
+      predResult.textContent = `$${Number(data.predicted_price).toFixed(2)}`;
     }
   } catch (err) {
     predResult.textContent = `Error: ${err.message}`;
+    predResult.classList.add('is-error');
   }
 
-  // fetch history
   try {
-    const resp2 = await fetch(`${API_BASE}/history/${ticker}`);
-    const hist = await resp2.json();
-    if (resp2.ok) {
-      historyList.innerHTML = '';
-      hist.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.date}: ${item.close_price}`;
-        historyList.appendChild(li);
-      });
+    const resp = await fetch(`${API_BASE}/history/${ticker}`);
+    const hist = await resp.json();
+    if (resp.ok) {
+      renderHistory(hist);
+      renderTrend(hist);
     }
   } catch (err) {
-    console.error("History fetch error:", err);
+    historyList.innerHTML = `<li><strong>History unavailable</strong><span>${err.message}</span></li>`;
+    trendSummary.textContent = 'Unable to load trend';
   }
 });
 
 btnAdd.addEventListener('click', async () => {
-  const ticker = txtTicker.value.trim();
+  const ticker = txtTicker.value.trim().toUpperCase();
   const date = dateEl.value;
   const price = priceEl.value;
   if (!ticker || !date || !price) {
@@ -69,21 +76,90 @@ btnAdd.addEventListener('click', async () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        ticker: ticker,
-        date: date,
-        price: price
+        ticker,
+        date,
+        price
       })
     });
     const resj = await resp.json();
     if (!resp.ok) {
-      addStatus.textContent = `Error: ${resj.error}`;
-      addStatus.style.color = 'red';
+      setAddStatus(`Error: ${resj.error}`, false);
     } else {
-      addStatus.textContent = 'Price added successfully';
-      addStatus.style.color = 'green';
+      setAddStatus('Price added successfully', true);
+      btnPredict.click();
     }
   } catch (err) {
-    addStatus.textContent = `Error: ${err.message}`;
-    addStatus.style.color = 'red';
+    setAddStatus(`Error: ${err.message}`, false);
   }
 });
+
+function renderHistory(items) {
+  historyList.innerHTML = '';
+  recordCount.textContent = items.length;
+
+  if (!items.length) {
+    historyList.innerHTML = '<li><strong>No records found</strong><span>--</span></li>';
+    latestPrice.textContent = '--';
+    latestDate.textContent = 'No data returned';
+    return;
+  }
+
+  items.forEach(item => {
+    const li = document.createElement('li');
+    const date = formatDate(item.date);
+    const price = Number(item.close_price).toFixed(2);
+    li.innerHTML = `<strong>${date}</strong><span>$${price}</span>`;
+    historyList.appendChild(li);
+  });
+
+  const latest = items[items.length - 1];
+  latestPrice.textContent = `$${Number(latest.close_price).toFixed(2)}`;
+  latestDate.textContent = formatDate(latest.date);
+}
+
+function renderTrend(items) {
+  trendChart.innerHTML = '';
+  if (!items.length) {
+    trendSummary.textContent = 'No data available';
+    return;
+  }
+
+  const values = items.map(item => Number(item.close_price));
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = Math.max(max - min, 1);
+
+  items.forEach(item => {
+    const value = Number(item.close_price);
+    const height = 18 + ((value - min) / range) * 82;
+    const bar = document.createElement('div');
+    bar.className = 'trend-bar';
+    bar.style.height = `${height}%`;
+    bar.dataset.label = `${formatShortDate(item.date)} $${value.toFixed(2)}`;
+    trendChart.appendChild(bar);
+  });
+
+  const direction = values[values.length - 1] >= values[0] ? 'up' : 'down';
+  trendSummary.textContent = `${items.length} records, ${direction} from first close`;
+}
+
+function formatDate(value) {
+  return new Date(value).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  });
+}
+
+function formatShortDate(value) {
+  return new Date(value).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit'
+  });
+}
+
+function setAddStatus(message, success) {
+  addStatus.textContent = message;
+  addStatus.classList.toggle('is-success', success);
+  addStatus.classList.toggle('is-error', !success);
+}
