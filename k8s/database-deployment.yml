@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: database
-          image: mmasabalvi/database:d2df4e16741b0558682debc50afd3412815f8528
+          image: mmasabalvi/database:770b853ecf704373973d25dd41be36b71a2499e3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
