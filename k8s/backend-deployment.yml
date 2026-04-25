@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: mmasabalvi/backend:latest
+          image: mmasabalvi/backend:67d4aba1da353d59615ed3eecba0cc8d4ca81324
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
