@@ -74,11 +74,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet -- k8s; then
+          git add k8s/backend-deployment.yml k8s/frontend-deployment.yml k8s/database-deployment.yml
+
+          if git diff --cached --quiet; then
             echo "No manifest changes to commit."
             exit 0
           fi
 
-          git add k8s/backend-deployment.yml k8s/frontend-deployment.yml k8s/database-deployment.yml
           git commit -m "Update Kubernetes image tags to ${IMAGE_TAG} [skip ci]"
-          git push
+          git push origin HEAD:main
