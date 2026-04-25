@@ -62,3 +62,7 @@ INSERT INTO price_history (ticker, date, close_price) VALUES
   ('MSFT', '2025-10-10', 305.2),
   ('MSFT', '2025-10-11', 305.8),
   ('MSFT', '2025-10-12', 306.0);
+
+CREATE USER IF NOT EXISTS 'stockuser'@'%' IDENTIFIED BY 'stockpass';
+GRANT ALL PRIVILEGES ON stockdb.* TO 'stockuser'@'%';
+FLUSH PRIVILEGES;

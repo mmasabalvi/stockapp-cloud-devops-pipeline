@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000";
+const API_BASE = "http://3.228.17.99:30050";
 
 // get elements
 const ddl = document.getElementById('tickerDropdown');
