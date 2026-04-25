@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: mmasabalvi/frontend:67d4aba1da353d59615ed3eecba0cc8d4ca81324
+          image: mmasabalvi/frontend:d2df4e16741b0558682debc50afd3412815f8528
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
